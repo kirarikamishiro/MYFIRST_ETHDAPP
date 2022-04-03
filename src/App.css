@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Sacramento&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@900&display=swap');
+
 .mainContainer {
   display: flex;
   justify-content: center;
@@ -14,8 +17,9 @@
 
 .header {
   text-align: center;
-  font-size: 32px;
+  font-size: 64px;
   font-weight: 600;
+  font-family: 'M PLUS 1p', sans-serif;
 }
 
 .bio {
