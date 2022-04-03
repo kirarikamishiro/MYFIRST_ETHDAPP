@@ -15,7 +15,7 @@ const App = () => {
   const [allWaves, setAllWaves] = useState([]);
   console.log("currentAccount: ", currentAccount);
   /* デプロイされたコントラクトのアドレスを保持する変数を作成 */
-  const contractAddress = "0xC9c8668638C2Fb8254D6B7F8Aa676cE1a1Dfee42";
+  const contractAddress = "0xEdCF6Bf7858eE9BB09Bf133129437A9f4080F869";
   /* コントラクトからすべてのwavesを取得するメソッドを作成 */
   /* ABIの内容を参照する変数を作成 */
   const contractABI = abi.abi;
@@ -64,8 +64,7 @@ const App = () => {
         message: message,
       },
       ]);
-      
-      };
+    };
     /* NewWaveイベントがコントラクトから発信されたときに、情報をを受け取ります */
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -80,7 +79,7 @@ const App = () => {
       wavePortalContract.off("NewWave", onNewWave);
       }
     };
-    }, [contractABI]);
+    }, []);
 
   /* window.ethereumにアクセスできることを確認 */
   const checkIfWalletIsConnected = async () => {
@@ -100,7 +99,7 @@ const App = () => {
         setCurrentAccount(account);
         getAllWaves();
       } else {
-        console.log("No authorized account found")
+        console.log("No authorized account found");
       }
     } catch (error) {
       console.log(error);
@@ -147,6 +146,7 @@ const App = () => {
         console.log("Mined -- ", waveTxn.hash);
         count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
+
         let contractBalance_post = await provider.getBalance(wavePortalContract.address);
         /* コントラクトの残高が減っていることを確認 */
         if (contractBalance_post < contractBalance){
@@ -159,7 +159,6 @@ const App = () => {
           "Contract balance after wave:",
           ethers.utils.formatEther(contractBalance_post)
         );
-        
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -171,13 +170,15 @@ const App = () => {
   /* WEBページがロードされたときに下記の関数を実行 */
   useEffect(() => {
     checkIfWalletIsConnected();
-  }, [checkIfWalletIsConnected])
+  }, [])
+
+  const today = new Date();
 
   return (
     <div className="mainContainer">
       <div className="dataContainer">
-        <div className="header">
-        <span role="img" aria-label="hand-wave">👋</span> WELCOME!
+        <div className="header" style={{color:"#19BC9B"}}>
+         UNCHAINEL
         </div>
         <div className="bio">
           イーサリアムウォレットを接続して、メッセージを作成したら、<span role="img" aria-label="hand-wave">👋</span>を送ってください<span role="img" aria-label="shine">✨</span>
@@ -212,11 +213,27 @@ const App = () => {
         {currentAccount && (
         allWaves.slice(0).reverse().map((wave, index) => {
           return (
-            <div key={index} style={{ backgroundColor: "#F8F8FF", marginTop: "16px", padding: "8px" }}>
-              <div>Address: {wave.address}</div>
-              <div>Time: {wave.timestamp.toString()}</div>
-              <div>Message: {wave.message}</div>
-            </div>)
+            <>
+            <div style={{marginTop:16}}>
+
+              <div style={{color:"#989B9F",fontSize:14}}>{wave.address}</div>
+              <div key={index} style={{ backgroundColor: "#19BC9B", padding: "8px",borderRadius:8 }}>
+                
+                <div>{wave.message}</div>
+              </div>
+              <div style={{fontSize:12,color:"#989B9F"}}>
+              {today.getFullYear() === wave.timestamp.getFullYear() &&
+              today.getMonth() === wave.timestamp.getMonth() &&
+              today.getDate() === wave.timestamp.getDate()
+              ?<div>Today at {wave.timestamp.getHours()}:{wave.timestamp.getMinutes()<=9 ? "0" + wave.timestamp.getMinutes():wave.timestamp.getMinutes()}</div>
+              :<h2>{wave.timestamp.getMonth()}/{wave.timestamp.getDate()}/{wave.timestamp.getYear()}</h2>
+              }</div>
+            
+            </div>
+            
+            </>
+            
+            )
         })
         )}
       </div>
